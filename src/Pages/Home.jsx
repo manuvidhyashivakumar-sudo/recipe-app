@@ -6,9 +6,9 @@ import {
   filterByCategory,
 } from "../services/api";
 
-import RecipeCard from "../components/RecipeCard";
-import SearchBar from "../components/SearchBar";
-import CategoryFilter from "../components/CategoryFilter";
+import RecipeCard from "../Components/RecipeCard";
+import SearchBar from "../Components/SearchBar";
+import CategoryFilter from "../Components/CategoryFilter";
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);

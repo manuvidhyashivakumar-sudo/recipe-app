@@ -1,5 +1,5 @@
 import { useFavorites } from "../context/FavoritesContext";
-import RecipeCard from "../components/RecipeCard";
+import RecipeCard from "../Components/RecipeCard";
 
 const Favorites = () => {
   const { favorites } = useFavorites();
