@@ -1,59 +1,88 @@
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fetchRecipeById } from "../services/api";
+import { FavoritesContext } from "../context/FavoritesContext";
 
-const RecipeDetails = () => {
+function RecipeDetails() {
   const { id } = useParams();
 
-  const [recipe, setRecipe] = useState(null);
+  const [meal, setMeal] = useState(null);
+
+  const { addFavorite } = useContext(FavoritesContext);
 
   useEffect(() => {
-    const getRecipe = async () => {
-      const data = await fetchRecipeById(id);
-      setRecipe(data);
-    };
+    fetchRecipe();
+  }, []);
 
-    getRecipe();
-  }, [id]);
+  const fetchRecipe = async () => {
+    const res = await axios.get(
+      `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+    );
 
-  if (!recipe) return <h2>Loading...</h2>;
+    setMeal(res.data.meals[0]);
+  };
+
+  if (!meal) return <h2 className="p-6">Loading...</h2>;
+
+  const ingredients = [];
+
+  for (let i = 1; i <= 20; i++) {
+    const ingredient = meal[`strIngredient${i}`];
+    const measure = meal[`strMeasure${i}`];
+
+    if (ingredient) {
+      ingredients.push(`${ingredient} - ${measure}`);
+    }
+  }
 
   return (
-    <div className="p-5">
-      <Link
-        to="/"
-        className="text-blue-500"
-      >
+    <div className="p-6 max-w-5xl mx-auto">
+      <Link to="/" className="text-orange-500">
         ← Back
       </Link>
 
-      <div className="mt-5">
-        <img
-          src={recipe.strMealThumb}
-          alt={recipe.strMeal}
-          className="w-full max-w-md rounded"
-        />
+      <img
+        src={meal.strMealThumb}
+        alt={meal.strMeal}
+        className="w-full md:h-[500px] object-cover rounded-lg mt-4"
+      />
 
-        <h1 className="text-3xl font-bold mt-4">
-          {recipe.strMeal}
-        </h1>
+      <div className="mt-6">
+        <h1 className="text-4xl font-bold">{meal.strMeal}</h1>
 
-        <p className="mt-2">
-          Category: {recipe.strCategory}
+        <p className="mt-2 text-lg">
+          Category: {meal.strCategory}
         </p>
 
-        <h2 className="text-2xl mt-5 mb-2">
+        <button
+          onClick={() => addFavorite(meal)}
+          className="bg-red-500 text-white px-5 py-2 rounded mt-4"
+        >
+          Add to Favorites
+        </button>
+
+        <h2 className="text-2xl font-bold mt-6 mb-3">
+          Ingredients
+        </h2>
+
+        <ul className="list-disc pl-6">
+          {ingredients.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+
+        <h2 className="text-2xl font-bold mt-6 mb-3">
           Instructions
         </h2>
 
-        <p>{recipe.strInstructions}</p>
+        <p className="leading-8">{meal.strInstructions}</p>
 
-        {recipe.strYoutube && (
+        {meal.strYoutube && (
           <a
-            href={recipe.strYoutube}
+            href={meal.strYoutube}
             target="_blank"
             rel="noreferrer"
-            className="text-red-500 block mt-4"
+            className="inline-block mt-6 bg-orange-500 text-white px-5 py-3 rounded"
           >
             Watch Video
           </a>
@@ -61,6 +90,6 @@ const RecipeDetails = () => {
       </div>
     </div>
   );
-};
+}
 
 export default RecipeDetails;

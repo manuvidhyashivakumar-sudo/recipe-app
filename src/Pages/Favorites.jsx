@@ -1,25 +1,27 @@
-import { useFavorites } from "../context/FavoritesContext";
-import RecipeCard from "../Components/RecipeCard";
+import { useContext } from "react";
+import { FavoritesContext } from "../context/FavoritesContext";
+import RecipeCard from "../components/RecipeCard";
 
-const Favorites = () => {
-  const { favorites } = useFavorites();
+function Favorites() {
+  const { favorites } = useContext(FavoritesContext);
 
   return (
-    <div className="p-5">
-      <h1 className="text-3xl font-bold mb-5">
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">
         Favorite Recipes
       </h1>
 
-      <div className="grid md:grid-cols-4 gap-5">
-        {favorites.map((recipe) => (
-          <RecipeCard
-            key={recipe.idMeal}
-            recipe={recipe}
-          />
-        ))}
-      </div>
+      {favorites.length === 0 ? (
+        <p>No favorites added.</p>
+      ) : (
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {favorites.map((meal) => (
+            <RecipeCard key={meal.idMeal} meal={meal} />
+          ))}
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default Favorites;

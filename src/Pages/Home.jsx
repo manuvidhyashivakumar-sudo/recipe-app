@@ -1,82 +1,67 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-  fetchRecipes,
-  searchRecipes,
-  fetchCategories,
-  filterByCategory,
-} from "../services/api";
+import RecipeCard from "../components/RecipeCard";
+import SearchBar from "../components/SearchBar";
+import Filter from "../components/Filter";
 
-import RecipeCard from "../Components/RecipeCard";
-import SearchBar from "../Components/SearchBar";
-import CategoryFilter from "../Components/CategoryFilter";
-
-const Home = () => {
+function Home() {
   const [recipes, setRecipes] = useState([]);
-  const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
-    loadRecipes();
-    loadCategories();
+    fetchRecipes();
+    fetchCategories();
   }, []);
 
-  const loadRecipes = async () => {
-    const data = await fetchRecipes();
-    setRecipes(data);
+  const fetchRecipes = async () => {
+    const res = await axios.get(
+      "https://www.themealdb.com/api/json/v1/1/search.php?s="
+    );
+
+    setRecipes(res.data.meals);
   };
 
-  const loadCategories = async () => {
-    const data = await fetchCategories();
-    setCategories(data);
+  const fetchCategories = async () => {
+    const res = await axios.get(
+      "https://www.themealdb.com/api/json/v1/1/categories.php"
+    );
+
+    setCategories(res.data.categories);
   };
 
-  useEffect(() => {
-    const delay = setTimeout(async () => {
-      if (search) {
-        const data = await searchRecipes(search);
-        setRecipes(data || []);
-      } else {
-        loadRecipes();
-      }
-    }, 500);
+  const filteredRecipes = recipes?.filter((meal) => {
+    const matchesSearch = meal.strMeal
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-    return () => clearTimeout(delay);
-  }, [search]);
+    const matchesCategory = selectedCategory
+      ? meal.strCategory === selectedCategory
+      : true;
 
-  const handleCategory = async (category) => {
-    if (!category) {
-      loadRecipes();
-      return;
-    }
-
-    const data = await filterByCategory(category);
-    setRecipes(data);
-  };
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="p-5">
-      <div className="flex gap-4 mb-5">
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-        />
+    <div className="p-6">
+      <div className="grid md:grid-cols-2 gap-4 mb-6">
+        <SearchBar search={search} setSearch={setSearch} />
 
-        <CategoryFilter
+        <Filter
           categories={categories}
-          onSelect={handleCategory}
+          selected={selectedCategory}
+          setSelected={setSelectedCategory}
         />
       </div>
 
-      <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-5">
-        {recipes?.map((recipe) => (
-          <RecipeCard
-            key={recipe.idMeal}
-            recipe={recipe}
-          />
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {filteredRecipes?.map((meal) => (
+          <RecipeCard key={meal.idMeal} meal={meal} />
         ))}
       </div>
     </div>
   );
-};
+}
 
 export default Home;
