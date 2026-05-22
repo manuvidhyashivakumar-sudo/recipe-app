@@ -4,7 +4,7 @@ import RecipeCard from "../components/RecipeCard";
 import SearchBar from "../components/SearchBar";
 import Filter from "../components/Filter";
 
-function Home() {
+const Home = () => {
   const [recipes, setRecipes] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
@@ -31,21 +31,22 @@ function Home() {
     setCategories(res.data.categories);
   };
 
-  const filteredRecipes = recipes?.filter((meal) => {
-    const matchesSearch = meal.strMeal
+  const filteredRecipes = recipes?.filter((recipe) => {
+    const matchesSearch = recipe.strMeal
       .toLowerCase()
       .includes(search.toLowerCase());
 
-    const matchesCategory = selectedCategory
-      ? meal.strCategory === selectedCategory
-      : true;
+    const matchesCategory =
+      selectedCategory === "" ||
+      recipe.strCategory === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
 
   return (
-    <div className="p-6">
-      <div className="grid md:grid-cols-2 gap-4 mb-6">
+    <div className="container mx-auto p-4">
+
+      <div className="grid md:grid-cols-2 gap-4 mb-8">
         <SearchBar search={search} setSearch={setSearch} />
 
         <Filter
@@ -55,13 +56,21 @@ function Home() {
         />
       </div>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredRecipes?.map((meal) => (
-          <RecipeCard key={meal.idMeal} meal={meal} />
-        ))}
-      </div>
+      {filteredRecipes?.length === 0 ? (
+        <div className="text-center mt-10">
+          <h2 className="text-2xl font-semibold">
+            No recipes found
+          </h2>
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredRecipes?.map((recipe) => (
+            <RecipeCard key={recipe.idMeal} recipe={recipe} />
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default Home;

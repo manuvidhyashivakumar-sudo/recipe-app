@@ -1,9 +1,9 @@
-function Filter({ categories, selected, setSelected }) {
+const Filter = ({ categories, selected, setSelected }) => {
   return (
     <select
+      className="w-full p-3 rounded-lg border"
       value={selected}
       onChange={(e) => setSelected(e.target.value)}
-      className="border p-3 rounded w-full"
     >
       <option value="">All Categories</option>
 
@@ -14,6 +14,6 @@ function Filter({ categories, selected, setSelected }) {
       ))}
     </select>
   );
-}
+};
 
 export default Filter;
