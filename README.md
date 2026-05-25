@@ -43,4 +43,4 @@ Deployed using Netlify.
 
 ## Author
 
-Your Name
+Manuvidhya Eashwer
