@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import RecipeCard from "../components/RecipeCard";
-import SearchBar from "../components/SearchBar";
-import Filter from "../components/Filter";
+import RecipeCard from "../Components/RecipeCard";
+import SearchBar from "../Components/SearchBar";
+import Filter from "../Components/Filter";
 
 const Home = () => {
   const [recipes, setRecipes] = useState([]);

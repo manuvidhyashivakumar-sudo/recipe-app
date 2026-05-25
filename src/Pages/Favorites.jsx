@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { FavoritesContext } from "../context/FavoritesContext";
-import RecipeCard from "../components/RecipeCard";
+import RecipeCard from "../Components/RecipeCard";
 
 const Favorites = () => {
   const { favorites } = useContext(FavoritesContext);
