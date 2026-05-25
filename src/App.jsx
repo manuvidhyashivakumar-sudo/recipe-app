@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import RecipeDetails from "./pages/RecipeDetails";
-import Favorites from "./pages/Favorites";
-import Navbar from "./components/Navbar";
+import Home from "./Pages/Home";
+import RecipeDetails from "./Pages/RecipeDetails";
+import Favorites from "./Pages/Favorites";
+import Navbar from "./Components/Navbar";
 import { FavoritesProvider } from "./context/FavoritesContext";
 
 function App() {
